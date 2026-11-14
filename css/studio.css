@@ -138,3 +138,28 @@ body.studio-unified { background: #eeece7; color: #332e28; }
 @media (max-width: 650px) { .prototype-nav .studio-mobile-menu { display: flex; } }
 
 .studio-unified :focus-visible { outline-color: #ac8758; }
+
+.studio-play-toolbar { flex-wrap: wrap; }
+.studio-play-toolbar > div { flex-wrap: wrap; }
+.studio-fullscreen-exit { display: none; }
+body.studio-fullscreen { overflow: hidden; }
+.studio-fullscreen .prototype-header, .studio-fullscreen .prototype-nav,
+.studio-fullscreen #studio-play-toolbar { display: none; }
+.studio-fullscreen #studio-live {
+  position: fixed; inset: 0; z-index: 100; box-sizing: border-box;
+  width: 100%; height: 100%; height: 100dvh; min-height: 0;
+  padding: calc(52px + env(safe-area-inset-top, 0px)) 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  overflow: hidden; background: #12100c;
+}
+.studio-fullscreen #workbench { position: relative; width: 100%; height: 100%; }
+.studio-fullscreen #workbench .preview-stage { position: absolute; inset: 0; padding: 0; }
+.studio-fullscreen #studio-live .device-wrap {
+  position: absolute; top: 50%; left: 50%; width: 390px; height: 820px;
+  max-width: none; transform: translate(-50%, -50%) scale(var(--studio-phone-scale, 1));
+}
+.studio-fullscreen #studio-live .phone { width: 390px; height: 820px; border-radius: 34px; }
+.studio-fullscreen .studio-fullscreen-exit {
+  display: block; position: absolute; top: calc(6px + env(safe-area-inset-top, 0px)); right: 8px;
+  min-height: 40px; padding: 0 14px; border: 1px solid #665744; border-radius: 10px;
+  background: #29241c; color: #f1eee4; font-size: 12px;
+}

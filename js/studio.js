@@ -10,6 +10,25 @@ let studioPhotoPaused = false;
 const studioClone = value => JSON.parse(JSON.stringify(value));
 const studioExpanded = new Set();
 
+function studioSetFullscreen(active) {
+  const live = document.querySelector('#studio-live');
+  document.body.classList.toggle('studio-fullscreen', active);
+  document.querySelectorAll('[data-studio-fullscreen]').forEach(button => button.setAttribute('aria-pressed', String(active)));
+  if (active) {
+    studioTools = false;
+    document.querySelector('#studio-tools').hidden = true;
+    document.querySelector('[data-studio-fullscreen-exit]').focus();
+    live.requestFullscreen?.().catch(() => {});
+  } else {
+    if (document.fullscreenElement === live) document.exitFullscreen().catch(() => {});
+    document.querySelector('[data-studio-fullscreen]')?.focus();
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement && document.body.classList.contains('studio-fullscreen')) studioSetFullscreen(false);
+});
+
 function studioEntry(section, stage, title, branch = false, extra = {}) { return { id: `${section}-${stage}`, section, stage, title, branch, ...extra }; }
 function studioCatalog() {
   const onboardingEntries = obFlowStages().map(([stage, title]) => studioEntry('onboarding', stage, title, ['login', 'age-blocked', 'exit-confirm', 'home-error'].includes(stage) || stage.startsWith('guardian-') || stage.startsWith('parent-')));
@@ -145,6 +164,15 @@ function initStudio() {
   shell.innerHTML = `<header class="prototype-header"><button class="prototype-brand" data-studio-section="all">키컸으면 <small>프로토타입</small></button><div class="studio-view-switch" role="group" aria-label="보기 방식"><button data-studio-view="gallery">${icon('grid', 15)}화면 전시</button><button data-studio-view="play">${icon('play', 13)}직접 체험</button></div><div class="studio-version-switch" role="group" aria-label="온보딩 버전"><button data-studio-version="demo">시연용</button><button data-studio-version="release">출시용</button></div></header><div class="prototype-layout"><aside class="prototype-nav" id="studio-nav"></aside><main class="prototype-main"><section id="studio-gallery"></section><div class="studio-play-toolbar" id="studio-play-toolbar"></div><div id="studio-live"></div></main></div><div id="studio-zoom"></div><aside class="studio-tools" id="studio-tools" aria-label="체험 설정" hidden></aside>`;
   document.body.prepend(shell);
   document.querySelector('#studio-live').append(document.querySelector('#workbench'));
+  const exitFullscreen = document.createElement('button');
+  exitFullscreen.className = 'studio-fullscreen-exit';
+  exitFullscreen.setAttribute('data-studio-fullscreen-exit', '');
+  exitFullscreen.textContent = '전체화면 종료';
+  document.querySelector('#studio-live').append(exitFullscreen);
+  new ResizeObserver(([entry]) => {
+    const { width, height } = entry.contentRect;
+    document.querySelector('#studio-live').style.setProperty('--studio-phone-scale', Math.min(width / 404, height / 834));
+  }).observe(document.querySelector('#studio-live'));
   studioGalleryNode = document.querySelector('#studio-gallery');
   studioPreviewNode = document.querySelector('#preview');
   studioPreviewAnchor = document.createComment('live phone mount');
@@ -157,6 +185,7 @@ function initStudio() {
   routineFlowView = false; sleepFlowView = false; onboardingFlowView = false; reportFlowView = false;
 }
 function studioRenderFrame() {
+  if (studioMode !== 'play' && document.body.classList.contains('studio-fullscreen')) studioSetFullscreen(false);
   studioMountView();
   document.body.classList.add('studio-unified');
   document.body.classList.toggle('studio-gallery-mode', studioMode === 'gallery');
@@ -169,7 +198,7 @@ function studioRenderFrame() {
     const key = [studioSection, onboardingMode, myPreferences.theme, [...studioExpanded].join(',')].join('|');
     if (studioGalleryKey !== key) { document.querySelector('#studio-gallery').innerHTML = studioGalleryHTML(); studioGalleryKey = key; studioRestoreGallery(); }
   }
-  document.querySelector('#studio-play-toolbar').innerHTML = `<div><button data-studio-back>${icon('back', 16)}화면 전시로 돌아가기</button><span>${STUDIO_SECTIONS.find(([key]) => key === studioCurrentSection())?.[1] ?? '직접 체험'}</span></div><div>${state.tab === 'guardian' ? '<button data-guardian-child>아이 화면으로 돌아가기 ↗</button>' : state.tab === 'onboarding' && onboarding.screen === 'guardian-wait' ? '<button data-ob-parent>보호자 화면으로 ↗</button>' : ''}<button data-studio-restart>${icon('timer', 14)}처음부터</button><button data-studio-tools>${icon('settings', 15)}체험 설정</button></div>`;
+  document.querySelector('#studio-play-toolbar').innerHTML = `<div><button data-studio-back>${icon('back', 16)}화면 전시로 돌아가기</button><span>${STUDIO_SECTIONS.find(([key]) => key === studioCurrentSection())?.[1] ?? '직접 체험'}</span></div><div>${state.tab === 'guardian' ? '<button data-guardian-child>아이 화면으로 돌아가기 ↗</button>' : state.tab === 'onboarding' && onboarding.screen === 'guardian-wait' ? '<button data-ob-parent>보호자 화면으로 ↗</button>' : ''}<button data-studio-fullscreen aria-pressed="${document.body.classList.contains('studio-fullscreen')}">전체화면</button><button data-studio-restart>${icon('timer', 14)}처음부터</button><button data-studio-tools>${icon('settings', 15)}체험 설정</button></div>`;
   if (studioTools) studioRenderTools();
 }
 function studioMountView() {
@@ -310,6 +339,8 @@ document.addEventListener('click', event => {
   const thumb = event.target.closest?.('[data-studio-zoom]');
   if (thumb) { studioOpenZoom(thumb.dataset.studioZoom); return; }
   const button = event.target.closest('button'); if (!button) return;
+  if (button.hasAttribute('data-studio-fullscreen')) { studioSetFullscreen(true); return; }
+  if (button.hasAttribute('data-studio-fullscreen-exit')) { studioSetFullscreen(false); return; }
   if (button.dataset.studioView) { if (button.dataset.studioView === studioMode) return; if (button.dataset.studioView === 'play') studioResume(); else studioGallery(); return; }
   if (button.hasAttribute('data-studio-back')) { studioGallery(); return; }
   if (button.dataset.studioSection) {
@@ -346,6 +377,9 @@ document.addEventListener('click', event => {
   if (button.dataset.photoPreview) state.tab = 'growth';
 }, true);
 document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.body.classList.contains('studio-fullscreen')) {
+    event.preventDefault(); event.stopImmediatePropagation(); studioSetFullscreen(false); return;
+  }
   const thumb = event.target.closest?.('[data-studio-zoom]');
   if (thumb && ['Enter', ' '].includes(event.key)) { event.preventDefault(); studioOpenZoom(thumb.dataset.studioZoom); }
   if (studioZoomId) {
