@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#12100c" />
+    <meta name="description" content="키컸으면 UIUX 프로토타입. 전체 화면 전시와 직접 체험을 제공하며 합성 데이터만 사용합니다." />
+    <title>키컸으면 · UIUX 프로토타입</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23809671'/%3E%3Cpath d='M10 23V14m6 9V9m6 14V5' stroke='%2312100C' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/studio.css" />
+    <script src="./js/workout-data.js" defer></script>
+    <script src="./js/workout.js" defer></script>
+    <script src="./js/photo.js" defer></script>
+    <script src="./js/home.js" defer></script>
+    <script src="./js/sleep.js" defer></script>
+    <script src="./js/onboarding.js" defer></script>
+    <script src="./js/guardian.js" defer></script>
+    <script src="./js/home-questions.js" defer></script>
+    <script src="./js/my.js" defer></script>
+    <script src="./js/report.js" defer></script>
+    <script src="./js/studio.js" defer></script>
+    <script src="./js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="workbench" id="workbench">
+      <header class="studio-header">
+        <a class="brand" href="./" aria-label="성장 탭 시안 초기화"><span class="brand-mark" aria-hidden="true">↟</span><span>키컸으면 <span class="brand-slash">/</span> <strong>성장 탭</strong></span></a>
+        <span class="studio-meta"><span class="live-dot"></span> 로컬 프로토타입 <span class="meta-divider">·</span> 2026.11</span>
+      </header>
+      <section class="intro">
+        <div><p class="eyebrow">GROWTH TAB EXPLORATIONS</p><h1>매일의 기록을 담는, 세 가지 리듬.</h1><p class="intro-copy">같은 구조와 데이터로 비교하고, 편한 조합을 골라보세요.</p></div>
+        <button class="compare-toggle studio-button" id="compare-toggle" aria-pressed="false">나란히 비교 <span aria-hidden="true">↗</span></button>
+      </section>
+      <nav class="preset-switcher" aria-label="전체 시안 선택" id="presets"></nav>
+      <div class="studio-grid">
+        <aside class="settings-column">
+          <div class="home-inspector" id="home-controls"></div>
+          <div class="my-inspector" id="my-controls"></div>
+          <div class="report-inspector" id="report-controls"></div>
+          <div class="ob-launcher"><button class="studio-button" data-ob-launch>가입·온보딩 보기 ↗</button></div>
+          <div class="ob-inspector" id="ob-controls"></div>
+          <div class="guardian-inspector" id="guardian-controls"></div>
+          <div class="question-inspector" id="question-controls"></div>
+          <details class="controls-panel" open>
+            <summary>세부 비교 <span aria-hidden="true">⌄</span></summary>
+            <div id="controls"></div>
+          </details>
+          <div class="scenario-panel"><p class="panel-caption">합성 데이터</p><div class="scenario-options" id="scenarios"></div><button class="reset-button" id="reset-data">기록과 날짜 초기화 ↺</button></div>
+          <div class="photo-inspector sleep-inspector"><p class="panel-caption">수면 · 세부 화면</p><button class="studio-button routine-flow-toggle" data-action="sleep-flow" aria-pressed="false">세부 화면 한눈에 보기 ↗</button><div class="photo-preview-buttons"><button data-sleep-preview="empty">기록 없는 날</button><button data-sleep-preview="entry">시간 입력</button><button data-sleep-preview="overnight">시간 확인</button><button data-sleep-preview="edit">수정</button><button data-sleep-preview="discard">입력 취소</button><button data-sleep-preview="delete">삭제</button></div><p>시각 입력과 동시에 수면 시간 확인<br>저장·수정·삭제는 합성 데이터로 동작</p></div>
+          <div class="photo-inspector routine-inspector"><p class="panel-caption">스트레칭 · 세부 화면</p><button class="studio-button routine-flow-toggle" data-action="routine-flow" aria-pressed="false">세부 화면 한눈에 보기 ↗</button><label class="routine-week-picker studio-week-picker"><span>비교할 단계</span><select data-routine-level><option value="1">1단계</option><option value="2">2단계</option></select></label><div class="photo-preview-buttons"><button data-routine-preview="detail">동작 상세</button><button data-routine-preview="preview">운동 준비</button><button data-routine-preview="running">진행 중</button><button data-routine-preview="paused">일시정지</button><button data-routine-preview="finished">완료 직전</button><button data-routine-preview="summary">현재 결과</button></div><p>참고 자료의 1·2단계, 총 14일 구성<br>동작 그림은 시안용 도형 · 수행 기록은 합성</p></div>
+          <div class="photo-inspector"><p class="panel-caption">사진 기록 · 단계 미리보기</p><div class="photo-preview-buttons"><button data-photo-preview="camera">촬영</button><button data-photo-preview="captured">사진 확인</button><button data-photo-preview="analyzing">인식 대기</button><button data-photo-preview="review">식사 확인</button><button data-photo-preview="calculated">합계 확인</button><button data-photo-preview="error">인식 실패</button></div><p>카메라 촬영은 실제 동작 · 인식·영양값은 합성 시안<br>사진 저장 API는 미지원</p></div>
+          <p class="keyboard-hint"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 시안 &nbsp; <kbd>←</kbd> <kbd>→</kbd> 날짜<br><kbd>W</kbd> 운동 &nbsp; <kbd>M</kbd> 식사 &nbsp; <kbd>S</kbd> 수면</p>
+        </aside>
+        <main class="preview-stage" id="preview" aria-label="휴대폰 화면 시안"></main>
+        <aside class="notes-column" id="notes"></aside>
+      </div>
+      <footer class="studio-footer"><span>버리는 시안 · 실제 기록과 연결되지 않습니다.</span><span>390px 프레임 <span class="meta-divider">·</span> Earth-Tone dark</span></footer>
+    </div>
+    <div class="sr-only" id="announcer" role="status" aria-live="polite"></div>
+  </body>
+</html>

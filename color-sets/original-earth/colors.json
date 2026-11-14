@@ -1,0 +1,15 @@
+{
+  "name": "original-earth",
+  "description": "베이지 조정 전 기존 Earth-Tone 원본. 참고·복원용이며 앱에서 자동 로드하지 않는다.",
+  "colors": {
+    "background": "#12100C",
+    "card": "#1E1A15",
+    "accent": "#809671",
+    "accentBright": "#ADBD94",
+    "accentSoft": "#293020",
+    "onAccent": "#141A0F"
+  },
+  "snapshots": [
+    "style.css"
+  ]
+}
